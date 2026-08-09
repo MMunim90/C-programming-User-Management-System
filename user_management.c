@@ -29,6 +29,7 @@ int main()
 
         printf("\nSelect an option: ");
         scanf("%d", &option);
+        getchar();  // Consume extra enter
 
         if (option == 1)
         {
@@ -40,7 +41,7 @@ int main()
 
             if (user_index >= 0)
             {
-                printf("\nLogin successful! Welcome, %s!", users[user_index].username);
+                printf("\nLogin successful! Welcome, %s!\n", users[user_index].username);
             }
             else
             {
@@ -83,6 +84,20 @@ void register_user()
 
 int login_user()
 {
+    char username[CREDENTIAL_LENGTH];
+    char password[CREDENTIAL_LENGTH];
+    printf("\n--- Login to a user ---\n");
+    printf("\nEnter username: ");
+    fgets(username, CREDENTIAL_LENGTH, stdin);
+    fix_fgets_input(username);
+    input_password(password);
+
+    for(int i=0; i<user_count; i++){
+        if(strcmp(username, users[i].username) == 0 && strcmp(password, users[i].password) == 0){
+            return i;
+        }
+    }
+
     return -1;
 }
 
@@ -94,7 +109,7 @@ void fix_fgets_input(char *string)
 
 void input_password(char *password)
 {
-    printf("\nEnter password: ");
+    printf("Enter password: ");
     fgets(password, CREDENTIAL_LENGTH, stdin);
     fix_fgets_input(password);
 }
