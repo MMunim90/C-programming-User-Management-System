@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX_USERS 10
+#define MAX_USERS 15
 #define CREDENTIAL_LENGTH 30
 
 typedef struct
@@ -10,18 +10,26 @@ typedef struct
 } User;
 
 User users[MAX_USERS];
-int user_count = 0;
+int user_count = 2;
 
 void register_user();
 int login_user(); // returns the user index
 void fix_fgets_input(char *);
+void input_username(char *);
 void input_password(char *);
+void adminAndModerator();
 
 int main()
 {
     while (1)
     {
+        strcpy(users[0].username, "Admin");
+        strcpy(users[0].password, "admin");
+        strcpy(users[1].username, "Moderator");
+        strcpy(users[1].password, "moderator");
+
         int option;
+
         printf("\n ----- Welcome to User Management System -----");
         printf("\n1. Register");
         printf("\n2. Login");
@@ -29,7 +37,7 @@ int main()
 
         printf("\nSelect an option: ");
         scanf("%d", &option);
-        getchar();  // Consume extra enter
+        getchar(); // Consume extra enter
 
         if (option == 1)
         {
@@ -39,18 +47,26 @@ int main()
         {
             int user_index = login_user();
 
-            if (user_index >= 0)
+            if (user_index > 0)
             {
-                printf("\nLogin successful! Welcome, %s!\n", users[user_index].username);
-            }
-            else
+                printf("\n\033[32mLogin successful! Welcome, %s!\033[0m\n", users[user_index].username); // green colored text
+                if (user_index == 1)
+                {
+                    adminAndModerator();
+                }else
+                {
+                    printf("\033[32mMember number: %dXbit.\033[0m\n", user_index + 1);
+                }
+            }else if(user_index == 0){
+                printf("\nExiting...\n");
+            }else
             {
-                printf("\nLogin failed! Incorrect username or password.\n");
+                printf("\n\033[31mLogin failed! Incorrect username or password!!!\033[0m\n"); // red colored text
             }
         }
         else if (option == 3)
         {
-            printf("\nExiting Program.\n");
+            printf("\nExiting Program...\n");
             return 0;
         }
         else
@@ -71,34 +87,81 @@ void register_user()
         printf("\nEnter username: ");
         fgets(users[new_index].username, CREDENTIAL_LENGTH, stdin);
         fix_fgets_input(users[new_index].username);
+        if (strcmp(users[new_index].username, "Admin") == 0 || strcmp(users[new_index].username, "Moderator") == 0)
+        {
+            printf("\n\033[31mUsing "
+                   "Admin"
+                   " or "
+                   "Moderator"
+                   " as an username is prohibited!!!\033[0m\n");
+            return;
+        }
         input_password(users[new_index].password);
         user_count++;
-        printf("\nRegistration successful!\n");
+        printf("\n\033[32mRegistration successful! Member number: %dXbit.\033[0m\n", user_count);
     }
     else
     {
-        printf("\nMaximum %d users can be stored! No more registration allowed!!!\n", MAX_USERS);
+        printf("\n\033[31mMaximum %d users can be stored! No more registration allowed!!!\033[0m\n", MAX_USERS);
         return;
     }
 }
 
 int login_user()
 {
-    char username[CREDENTIAL_LENGTH];
-    char password[CREDENTIAL_LENGTH];
-    printf("\n--- Login to a user ---\n");
-    printf("\nEnter username: ");
-    fgets(username, CREDENTIAL_LENGTH, stdin);
-    fix_fgets_input(username);
-    input_password(password);
+    while (1)
+    {
+        char username[CREDENTIAL_LENGTH];
+        char password[CREDENTIAL_LENGTH];
+        int opt;
 
-    for(int i=0; i<user_count; i++){
-        if(strcmp(username, users[i].username) == 0 && strcmp(password, users[i].password) == 0){
-            return i;
+        printf("\n--- Login as an user ---\n");
+
+        printf("\n1. Admin or Moderator");
+        printf("\n2. Member");
+        printf("\n3. Exit");
+
+        printf("\nSelect an option: ");
+        scanf("%d", &opt);
+        getchar(); // Consume extra enter
+
+        if (opt == 1)
+        {
+            input_username(username);
+            input_password(password);
+
+            if (strcmp(username, "Admin") == 0 && strcmp(password, "admin") == 0 || strcmp(username, "Moderator") == 0 && strcmp(password, "moderator") == 0)
+            {
+                return 1;
+            }else
+            {
+                return -1;
+            }
         }
-    }
+        else if (opt == 2)
+        {
+            input_username(username);
+            input_password(password);
 
-    return -1;
+            for (int i = 2; i < user_count; i++)
+            {
+                if (strcmp(username, users[i].username) == 0 && strcmp(password, users[i].password) == 0)
+                {
+                    return i;
+                }
+            }
+        }
+        else if (opt == 3)
+        {
+            return 0;
+        }
+        else
+        {
+            printf("\nInvalid Option. Please Try Again!\n");
+        }
+
+        return -1;
+    }
 }
 
 void fix_fgets_input(char *string)
@@ -107,9 +170,20 @@ void fix_fgets_input(char *string)
     string[index] = '\0';
 }
 
+void input_username(char *username)
+{
+    printf("\nEnter username: ");
+    fgets(username, CREDENTIAL_LENGTH, stdin);
+    fix_fgets_input(username);
+}
+
 void input_password(char *password)
 {
     printf("Enter password: ");
     fgets(password, CREDENTIAL_LENGTH, stdin);
     fix_fgets_input(password);
+}
+
+void adminAndModerator(){
+    printf("\nHello Administrator!!!\n");
 }
