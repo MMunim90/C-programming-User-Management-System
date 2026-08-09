@@ -130,7 +130,7 @@ int login_user()
             input_username(username);
             input_password(password);
 
-            if (strcmp(username, "Admin") == 0 && strcmp(password, "admin") == 0 || strcmp(username, "Moderator") == 0 && strcmp(password, "moderator") == 0)
+            if ((strcmp(username, "Admin") == 0 && strcmp(password, "admin") == 0) || (strcmp(username, "Moderator") == 0 && strcmp(password, "moderator") == 0))
             {
                 return 1;
             }else
