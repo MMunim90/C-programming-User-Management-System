@@ -77,7 +77,7 @@ int main()
         }
         else
         {
-            printf("\nInvalid Option. Please Try Again!\n");
+            printf("\n\033[31mInvalid Option. Please Try Again!\033[0m\n");
         }
     }
 
@@ -164,7 +164,7 @@ int login_user()
         }
         else
         {
-            printf("\nInvalid Option. Please Try Again!\n");
+            printf("\n\033[31mInvalid Option. Please Try Again!\033[0m\n");
         }
 
         return -1;
@@ -256,7 +256,7 @@ void adminAndModerator()
         }
         else
         {
-            printf("\nInvalid Option. Please Try Again!\n");
+            printf("\n\033[31mInvalid Option. Please Try Again!\033[0m\n");
         }
     }
 }
