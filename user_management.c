@@ -93,6 +93,16 @@ void register_user()
         printf("\nEnter username: ");
         fgets(users[new_index].username, CREDENTIAL_LENGTH, stdin);
         fix_fgets_input(users[new_index].username);
+
+        for (int i = 2; i < user_count; i++)
+        {
+            if (strcmp(users[new_index].username, users[i].username) == 0)
+            {
+                printf("\n\033[31mThis username is not available. please enter a new one.\033[0m\n");
+                return;
+            }
+        }
+
         if (strcmp(users[new_index].username, "Admin") == 0 || strcmp(users[new_index].username, "Moderator") == 0)
         {
             printf("\n\033[31mUsing "
@@ -245,7 +255,7 @@ void adminAndModerator()
 
                 for (int i = 2; i < user_count; i++)
                 {
-                    printf("Member id: %dXbit, Name: %s.\n", i+1, users[i].username);
+                    printf("Member id: %dXbit, Name: %s.\n", i + 1, users[i].username);
                 }
             }
         }
