@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <conio.h>
 #define MAX_USERS 15
 #define CREDENTIAL_LENGTH 30
 
@@ -49,17 +50,22 @@ int main()
 
             if (user_index > 0)
             {
-                printf("\n\033[32mLogin successful! Welcome, %s!\033[0m\n", users[user_index].username); // green colored text
                 if (user_index == 1)
                 {
+                    printf("\n\033[32mLogin successful! Welcome, Administrator!!!\033[0m\n"); // green colored text
                     adminAndModerator();
-                }else
+                }
+                else
                 {
+                    printf("\n\033[32mLogin successful! Welcome, %s!\033[0m\n", users[user_index].username); // green colored text
                     printf("\033[32mMember number: %dXbit.\033[0m\n", user_index + 1);
                 }
-            }else if(user_index == 0){
+            }
+            else if (user_index == 0)
+            {
                 printf("\nExiting...\n");
-            }else
+            }
+            else
             {
                 printf("\n\033[31mLogin failed! Incorrect username or password!!!\033[0m\n"); // red colored text
             }
@@ -133,7 +139,8 @@ int login_user()
             if ((strcmp(username, "Admin") == 0 && strcmp(password, "admin") == 0) || (strcmp(username, "Moderator") == 0 && strcmp(password, "moderator") == 0))
             {
                 return 1;
-            }else
+            }
+            else
             {
                 return -1;
             }
@@ -179,11 +186,77 @@ void input_username(char *username)
 
 void input_password(char *password)
 {
-    printf("Enter password: ");
-    fgets(password, CREDENTIAL_LENGTH, stdin);
-    fix_fgets_input(password);
+    int i = 0;
+    char ch;
+
+    printf("Enter password (masking enabled): ");
+
+    while ((ch = _getch()) != '\r')
+    {
+        if (ch == '\b')
+        {
+            if (i > 0)
+            {
+                i--;
+                printf("\b \b");
+            }
+        }
+        else
+        {
+            if (i < CREDENTIAL_LENGTH - 1)
+            {
+                password[i] = ch;
+                i++;
+
+                printf("*");
+            }
+        }
+    }
+
+    password[i] = '\0';
+
+    printf("\n");
 }
 
-void adminAndModerator(){
-    printf("\nHello Administrator!!!\n");
+void adminAndModerator()
+{
+    while (1)
+    {
+        printf("\n\033[32m --- Administrative profile --- \033[0m\n");
+
+        int option;
+
+        printf("\n1. See all members");
+        printf("\n2. Exit");
+
+        printf("\nSelect an option: ");
+        scanf("%d", &option);
+        getchar(); // Consume extra enter
+
+        if (option == 1)
+        {
+            if (user_count - 2 == 0)
+            {
+                printf("\nNo member was found!\n");
+            }
+            else
+            {
+                printf("\nAll Members(%d):- \n\n", user_count - 2);
+
+                for (int i = 2; i < user_count; i++)
+                {
+                    printf("Member id: %dXbit, Name: %s.\n", i+1, users[i].username);
+                }
+            }
+        }
+        else if (option == 2)
+        {
+            printf("\nExiting...\n");
+            return 0;
+        }
+        else
+        {
+            printf("\nInvalid Option. Please Try Again!\n");
+        }
+    }
 }
